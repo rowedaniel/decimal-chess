@@ -16,7 +16,6 @@ class Pawn(Piece):
         # bottom-right diagonal
         row = self.row + ( -1 if self.color == Piece.BLACK else 1 )
         col = self.col
-        print('checking:', row, col)
         if 0 <= row < boardSize and not check_piece_at(row, col):
             spaces.append((row, col))
 
@@ -35,7 +34,6 @@ class Pawn(Piece):
         # bottom-right diagonal
         row = self.row + ( -1 if self.color == Piece.BLACK else 1 )
         for col in (self.col-1, self.col+1):
-            print('checking:', row, col)
             if 0 <= row < boardSize and check_piece_at(row, col, self.color):
                 spaces.append((row, col))
 

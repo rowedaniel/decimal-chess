@@ -23,12 +23,14 @@ class King(Piece):
             for icol in range(-1, 2):
                 row = self.row + irow
                 col = self.col + icol
-                if row < boardSize and col < boardSize and not check_piece_at(row, col):
+                if 0 <= row < boardSize and \
+                   0 <= col < boardSize and \
+                   not check_piece_at(row, col):
                     spaces.append((row, col))
 
         return spaces
 
-    def get_attack_spaces(self, boardSize : int, check_piece_at, check_piece_color_at) -> list:
+    def get_attack_spaces(self, boardSize : int, check_piece_at) -> list:
         """
         returns an array of all possible locations to move to (not including attacking)
         @param {int} boardSize: the size of the board
@@ -45,7 +47,8 @@ class King(Piece):
             for icol in range(-1, 2):
                 row = self.row + irow
                 col = self.col + icol
-                if row < boardSize and col < boardSize and \
+                if 0 <= row < boardSize and \
+                   0 <= col < boardSize and \
                         check_piece_at(row, col):
                     spaces.append((row, col))
 

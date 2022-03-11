@@ -15,39 +15,36 @@ class Rook(Piece):
         row = self.row + 1
         col = self.col
         while row < boardSize:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+            if check_piece_at(row, col):
                 break
+            spaces.append((row, col))
             row += 1
 
         # bottom line
         row = self.row
         col = self.col + 1
         while col < boardSize:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+            if check_piece_at(row, col):
                 break
+            spaces.append((row, col))
             col += 1
 
         # left line
         row = self.row - 1
         col = self.col
         while row >= 0:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+            if check_piece_at(row, col):
                 break
+            spaces.append((row, col))
             row -= 1
 
         # left line
         row = self.row
         col = self.col - 1
         while col >= 0:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+            if check_piece_at(row, col):
                 break
+            spaces.append((row, col))
             col -= 1
 
         return spaces
-
-
-

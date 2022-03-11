@@ -55,3 +55,15 @@ class Board:
         @param {int} color: the color to check
         """
         return any((c != color for c in self.get_piece_color_at(row, col)))
+
+    def move_piece(self, row1 : int, col1 : int,
+                         row2 : int, col2 : int):
+        """
+        moves piece at designated row, col to new designated row, col
+        """
+
+        piece = self.state[row1][col1].pop()
+        # TODO: make this better. Currently very bad practice
+        piece.row = row2
+        piece.col = col2
+        self.state[row2][col2].append(piece)
