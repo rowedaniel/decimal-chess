@@ -1,6 +1,7 @@
 
 
 class Piece:
+    """ Basic Chess Piece superclass. All chess pieces should inherit from this. """
 
     WHITE = 0
     BLACK = 1
@@ -36,18 +37,20 @@ class Piece:
         """
         returns an array of all possible locations to move to (not including attacking)
         @param {int} boardSize: the size of the board
-        @param {Callable(int,int)} check_piece_at: function that checks if the space specified by (row, col) has a piece occupying it.
+        @param {Callable(int,int)} check_piece_at: function that checks if the space
+            specified by (row, col) has a piece occupying it.
         returns: {list<tuple<int,int>>} of tuple coords
         """
-        
         return []
 
-    def get_attack_spaces(self, boardSize : int, check_piece_at, check_piece_color_at) -> list:
+    def get_attack_spaces(self, boardSize : int, check_piece_at) -> list:
         """
         returns an array of all possible locations to move to (not including attacking)
         @param {int} boardSize: the size of the board
-        @param {Callable(int,int)} check_piece_at: function that checks if the space specified by (row, col) has a piece occupying it.
-        @param {Callable(int,int)} check_piece_color_at: function that returns the color of the piece at specified (row, col) coords
+        @param {Callable(int,int)} check_piece_at: function that checks if the space
+            specified by (row, col) has a piece occupying it.
+        @param {Callable(int,int)} check_piece_color_at: function that returns the color of
+            the piece at specified (row, col) coords
         returns: {list<tuple<int,int>>} of tuple coords
         """
 

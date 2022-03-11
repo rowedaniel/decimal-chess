@@ -1,3 +1,4 @@
+
 from Board import Board
 
 from Rook import Rook
@@ -20,14 +21,18 @@ def main():
         Knight  (10, 3, 0, 6, 0),
         Rook    (10, 5, 0, 7, 0),
 
-        Pawn    (10, 5, 1, 0, 0),
-        Pawn    (10, 5, 1, 1, 0),
-        Pawn    (10, 5, 1, 2, 0),
-        Pawn    (10, 5, 1, 3, 0),
-        Pawn    (10, 5, 1, 4, 0),
-        Pawn    (10, 5, 1, 5, 0),
-        Pawn    (10, 5, 1, 6, 0),
-        Pawn    (10, 5, 1, 7, 0),
+        Pawn    (10, 1, 1, 0, 0),
+        Pawn    (10, 1, 1, 1, 0),
+        Pawn    (10, 1, 1, 2, 0),
+        Pawn    (10, 1, 1, 3, 0),
+        Pawn    (10, 1, 1, 4, 0),
+        Pawn    (10, 1, 1, 5, 0),
+        Pawn    (10, 1, 1, 6, 0),
+        Pawn    (10, 1, 1, 7, 0),
+
+        # opposing pieces for testing
+        Pawn    (10, 1, 2, 0, 1),
+        Pawn    (10, 1, 2, 2, 1),
         ]
 
     for piece in pieces:
@@ -35,7 +40,16 @@ def main():
 
 
 
-    print(pieces[8].get_movement_spaces(board.size, board.get_piece_at))
+    print('A-file pawn movement:',
+            pieces[9].get_movement_spaces(board.size, board.get_piece_at)
+            )
+    print('B-file Knight movement:',
+            pieces[1].get_movement_spaces(board.size, board.get_piece_at)
+            )
+
+    print('A-file pawn attack:',
+            pieces[9].get_attack_spaces(board.size, board.check_opposing_piece_at)
+            )
 
 
 
