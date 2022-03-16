@@ -1,4 +1,6 @@
+
 from Piece import Piece
+from PieceLocation import PieceLocation
 
 class Board:
     """
@@ -13,57 +15,103 @@ class Board:
         self.size = size
         self.reset_board()
 
+    
+    # private methods`
     def reset_board(self):
         """
         resets the board to nothing (no pieces)
         """
         self.state = [[[] for i in range(self.size)] for j in range(self.size)]
 
-
-    def place_piece(self, row : int, col : int, piece : Piece):
+    def get_piece_colors_at(self, loc : PieceLocation) -> list:
         """
-        places a single piece on the board at the given location
-        @param {int} row: the row to place the piece
-        @param {int} col: the column to place the piece
-        @param {Piece} piece: the piece to place
-        """
-        self.state[row][col].append(piece)
-
-    def get_piece_at(self, row : int, col : int) -> bool:
-        """
-        decides if there is a piece at the desired location
-        @param {int} row: the row to check
-        @param {int} col: the column to check
-        """
-        return len(self.state[row][col]) > 0
-
-    def get_piece_color_at(self, row : int, col : int) -> list:
-        """
-        decides if there is a piece at the desired location
-        @param {int} row: the row to check
-        @param {int} col: the column to check
+        gets the list of piece colors on a space
+        @param {PieceLocation} loc: where to place the piece
         returns: list<int>: list of piece colors at that space
 
         """
-        return (cell.color for cell in self.state[row][col])
+        return (cell.color for cell in self.state[loc.row][loc.col])
 
-    def check_opposing_piece_at(self, row : int, col : int, color : int) -> bool:
+    def place_piece(self, loc : PieceLocation, piece : Piece):
+        """
+        places a single piece on the board at the given location
+        @param {PieceLocation} loc: where to place the piece
+        @param {Piece} piece: the piece to place
+        """
+        self.state[loc.row][loc.col].insert(loc.index, piece)
+
+    def remove_piece(self, loc : PieceLocation) -> Piece:
+        """
+        removes a single piece on the board from the given location
+        @param {PieceLocation} loc: where to find the piece
+        """
+        return self.state[loc.row][loc.col].pop(loc.index)
+
+    def get_piece(self, loc : PieceLocation) -> Piece:
+        """
+        gets a single piece on the board from the given location
+        @param {PieceLocation} loc: where to find the piece
+        """
+        return self.state[loc.row][loc.col][loc.index]
+
+    def get_piece_color_at(self, loc : PieceLocation) -> list:
+        """
+        gets the list of piece colors at a given location
+        @param {PieceLocation} loc: where to place the piece
+        returns: list<int>: list of piece colors at that space
+        """
+        return (cell.color for cell in self.state[loc.row][loc.col])
+
+
+    # public methods
+    def check_piece_at(self, loc : PieceLocation) -> bool:
+        """
+        decides if there is a piece at the desired location
+        @param {PieceLocation} loc: where to place the piece
+        """
+        return len(self.state[loc.row][loc.col]) > 0
+
+
+    def check_opposing_piece_at(self, loc : PieceLocation, color : int) -> bool:
         """
         decides if there is a piece of the opposing color at the desired location
-        @param {int} row: the row to check
-        @param {int} col: the column to check
+        @param {PieceLocation} loc: where to place the piece
         @param {int} color: the color to check
         """
-        return any((c != color for c in self.get_piece_color_at(row, col)))
+        return any((c != color for c in self.get_piece_color_at(loc)))
 
-    def move_piece(self, row1 : int, col1 : int,
-                         row2 : int, col2 : int):
+    def get_piece_movement(self, loc : PieceLocation) -> list:
+        """
+        returns {list<PieceLocation>}: the list of spaces that the piece at the given
+            location can move to.
+
+        """
+        if self.check_piece_at(loc):
+            return self.get_piece(loc).get_movement_spaces(self.size, self.check_piece_at)
+        return []
+
+    def get_piece_attack(self, loc : PieceLocation) -> list:
+        """
+        returns {list<PieceLocation>}: the list of spaces that the piece at the given
+            location can move to.
+
+        """
+        if self.check_piece_at(loc):
+            return self.get_piece(loc).get_attack_spaces(
+                    self.size,
+                    self.check_piece_at,
+                    self.check_opposing_piece_at
+                    )
+        return []
+
+
+    def move_piece(self, loc1 : PieceLocation,
+                         loc2 : PieceLocation,
+                         ):
         """
         moves piece at designated row, col to new designated row, col
         """
 
-        piece = self.state[row1][col1].pop()
-        # TODO: make this better. Currently very bad practice
-        piece.row = row2
-        piece.col = col2
-        self.state[row2][col2].append(piece)
+        piece = self.remove_piece(loc1)
+        piece.move(loc2)
+        self.place_piece(loc2, piece)

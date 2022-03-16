@@ -1,102 +1,110 @@
+
 from Piece import Piece
+from PieceLocation import PieceLocation
 
 class Bishop(Piece):
-    def get_movement_spaces(self, boardSize : int, check_piece_at) -> list:
-        """
-        returns an array of all possible locations to move to (not including attacking)
-        @param {int} boardSize: the size of the board
-        @param {Callable(int,int)} check_piece_at: function that checks if the space specified by (row, col) has a piece occupying it.
-        returns: {list<tuple<int,int>>} of tuple coords
-        """
-        
+    """
+    Bishop piece
+    """
+
+    def get_movement_spaces(self, board_size : int, check_piece_at) -> list:
+
         spaces = []
 
         # bottom-right diagonal
-        row = self.row + 1
-        col = self.col + 1
-        while row < boardSize and col < boardSize and not check_piece_at(row, col):
-            spaces.append((row, col))
+        row = self.location.row + 1
+        col = self.location.col + 1
+        loc = PieceLocation(row, col)
+        while row < board_size and col < board_size and not check_piece_at(loc):
+            spaces.append(PieceLocation(row, col))
             row += 1
             col += 1
+            loc = PieceLocation(row, col)
 
         # bottom-left diagonal
-        row = self.row + 1
-        col = self.col - 1
-        while row < boardSize and col >= 0 and not check_piece_at(row, col):
-            spaces.append((row, col))
+        row = self.location.row + 1
+        col = self.location.col - 1
+        loc = PieceLocation(row, col)
+        while row < board_size and col < board_size and not check_piece_at(loc):
+            spaces.append(PieceLocation(row, col))
             row += 1
             col -= 1
+            loc = PieceLocation(row, col)
 
         # top-right diagonal
-        row = self.row - 1
-        col = self.col + 1
-        while row >= 0 and col < boardSize and not check_piece_at(row, col):
-            spaces.append((row, col))
+        row = self.location.row - 1
+        col = self.location.col + 1
+        loc = PieceLocation(row, col)
+        while row < board_size and col < board_size and not check_piece_at(loc):
+            spaces.append(PieceLocation(row, col))
             row -= 1
             col += 1
+            loc = PieceLocation(row, col)
 
         # top-left diagonal
-        row = self.row - 1
-        col = self.col - 1
-        while row >= 0 and col >= 0 and not check_piece_at(row, col):
-            spaces.append((row, col))
+        row = self.location.row - 1
+        col = self.location.col - 1
+        loc = PieceLocation(row, col)
+        while row < board_size and col < board_size and not check_piece_at(loc):
+            spaces.append(PieceLocation(row, col))
             row -= 1
             col -= 1
+            loc = PieceLocation(row, col)
 
         return spaces
 
 
 
-    def get_attack_spaces(self, boardSize : int, check_piece_at, check_piece_color_at) -> list:
-        """
-        returns an array of all possible locations to move to (not including attacking)
-        @param {int} boardSize: the size of the board
-        @param {Callable(int,int)} check_piece_at: function that checks if the space specified by (row, col) has a piece occupying it.
-        @param {Callable(int,int)} check_piece_color_at: function that returns the color of the piece at specified (row, col) coords
-        returns: {list<tuple<int,int>>} of tuple coords
-        """
+    def get_attack_spaces(self, board_size : int, check_piece_at, check_opposing_piece_at) -> list:
 
         spaces = []
 
         # bottom-right diagonal
-        row = self.row + 1
-        col = self.col + 1
-        while row < boardSize and col < boardSize:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+        row = self.location.row + 1
+        col = self.location.col + 1
+        while row < board_size and col < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
                 break
             row += 1
             col += 1
 
         # bottom-left diagonal
-        row = self.row + 1
-        col = self.col - 1
-        while row < boardSize and col >= 0:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+        row = self.location.row + 1
+        col = self.location.col - 1
+        while row < board_size and col >= 0:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc, self.color):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
                 break
             row += 1
             col -= 1
 
         # top-right diagonal
-        row = self.row - 1
-        col = self.col + 1
-        while row >= 0 and col < boardSize:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+        row = self.location.row - 1
+        col = self.location.col + 1
+        while row >= 0 and col < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc, self.color):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
                 break
             row -= 1
             col += 1
 
         # top-left diagonal
-        row = self.row - 1
-        col = self.col - 1
+        row = self.location.row - 1
+        col = self.location.col - 1
         while row >= 0 and col >= 0:
-            if check_piece_at(row, col) and check_piece_color_at(row, col) != self.color:
-                spaces.append((row, col))
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc, self.color):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
                 break
             row -= 1
             col -= 1
 
         return spaces
-

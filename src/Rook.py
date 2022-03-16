@@ -1,50 +1,102 @@
+
 from Piece import Piece
+from PieceLocation import PieceLocation
 
 class Rook(Piece):
-    def get_movement_spaces(self, boardSize : int, check_piece_at) -> list:
-        """
-        returns an array of all possible locations to move to (not including attacking)
-        @param {int} boardSize: the size of the board
-        @param {Callable(int,int)} check_piece_at: function that checks if the space specified by (row, col) has a piece occupying it.
-        returns: {list<tuple<int,int>>} of tuple coords
-        """
-        
+    """ rook piece """
+    def get_movement_spaces(self, board_size : int, check_piece_at) -> list:
+
         spaces = []
 
-        # right line 
-        row = self.row + 1
-        col = self.col
-        while row < boardSize:
-            if check_piece_at(row, col):
+        # right line
+        row = self.location.row + 1
+        col = self.location.col
+        while row < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
                 break
-            spaces.append((row, col))
+            spaces.append(loc)
             row += 1
 
         # bottom line
-        row = self.row
-        col = self.col + 1
-        while col < boardSize:
-            if check_piece_at(row, col):
+        row = self.location.row
+        col = self.location.col + 1
+        while col < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
                 break
-            spaces.append((row, col))
+            spaces.append(loc)
             col += 1
 
         # left line
-        row = self.row - 1
-        col = self.col
+        row = self.location.row - 1
+        col = self.location.col
         while row >= 0:
-            if check_piece_at(row, col):
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
                 break
-            spaces.append((row, col))
+            spaces.append(loc)
             row -= 1
 
         # left line
-        row = self.row
-        col = self.col - 1
+        row = self.location.row
+        col = self.location.col - 1
         while col >= 0:
-            if check_piece_at(row, col):
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
                 break
-            spaces.append((row, col))
+            spaces.append(loc)
+            col -= 1
+
+        return spaces
+
+
+    def get_attack_spaces(self, board_size : int, check_piece_at, check_opposing_piece_at) -> list:
+
+        spaces = []
+
+        # right line
+        row = self.location.row + 1
+        col = self.location.col
+        while row < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
+                break
+            row += 1
+
+        # bottom line
+        row = self.location.row
+        col = self.location.col + 1
+        while col < board_size:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
+                break
+            col += 1
+
+        # left line
+        row = self.location.row - 1
+        col = self.location.col
+        while row >= 0:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
+                break
+            row -= 1
+
+        # left line
+        row = self.location.row
+        col = self.location.col - 1
+        while col >= 0:
+            loc = PieceLocation(row, col)
+            if check_piece_at(loc):
+                if check_opposing_piece_at(loc, self.color):
+                    spaces.append(loc)
+                break
             col -= 1
 
         return spaces
