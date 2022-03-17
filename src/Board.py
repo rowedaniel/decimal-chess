@@ -15,7 +15,6 @@ class Board:
         self.size = size
         self.reset_board()
 
-    
     # private methods`
     def reset_board(self):
         """
@@ -45,7 +44,12 @@ class Board:
         removes a single piece on the board from the given location
         @param {PieceLocation} loc: where to find the piece
         """
-        return self.state[loc.row][loc.col].pop(loc.index)
+        # get the piece
+        piece = self.state[loc.row][loc.col].pop(loc.index)
+        # update the positions of other pieces in the same space to have the right location
+        for i, move_piece in enumerate(self.state[loc.row][loc.col]):
+            move_piece.move(PieceLocation(loc.row, loc.col, i))
+        return piece
 
     def get_piece(self, loc : PieceLocation) -> Piece:
         """
@@ -62,6 +66,21 @@ class Board:
         """
         return (cell.color for cell in self.state[loc.row][loc.col])
 
+    def clean_dead_pieces(self):
+        """
+        removes all pieces with 0 health from the board
+        """
+        print('cleaning!')
+        for irow, row in enumerate(self.state):
+            for icol, space in enumerate(row):
+                index = 0
+                while index < len(space):
+                    loc = PieceLocation(irow, icol, index)
+                    if self.get_piece(loc).is_dead():
+                        print('aHA!')
+                        self.remove_piece(loc)
+                    else:
+                        index += 1
 
     # public methods
     def check_piece_at(self, loc : PieceLocation) -> bool:
@@ -112,6 +131,17 @@ class Board:
         moves piece at designated row, col to new designated row, col
         """
 
-        piece = self.remove_piece(loc1)
-        piece.move(loc2)
-        self.place_piece(loc2, piece)
+        # if there's  an opposing piece there, you gotta attack it.
+        piece = self.get_piece(loc1)
+        if self.check_opposing_piece_at(loc2, piece.color):
+            # as per this chess variant, instead of moving, spawn a new piece at the
+            # desired location
+            self.place_piece(loc2, piece.attack(loc2, self.get_piece(loc2)))
+            self.clean_dead_pieces()
+
+        # if there's no opposing piece there, just move
+        else:
+            self.remove_piece(loc1)
+            piece.move(loc2)
+            self.place_piece(loc2, piece)
+

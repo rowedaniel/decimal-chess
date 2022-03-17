@@ -76,7 +76,7 @@ class Bishop(Piece):
         col = self.location.col - 1
         while row < board_size and col >= 0:
             loc = PieceLocation(row, col)
-            if check_piece_at(loc, self.color):
+            if check_piece_at(loc):
                 if check_opposing_piece_at(loc, self.color):
                     spaces.append(loc)
                 break
@@ -88,7 +88,7 @@ class Bishop(Piece):
         col = self.location.col + 1
         while row >= 0 and col < board_size:
             loc = PieceLocation(row, col)
-            if check_piece_at(loc, self.color):
+            if check_piece_at(loc):
                 if check_opposing_piece_at(loc, self.color):
                     spaces.append(loc)
                 break
@@ -100,7 +100,7 @@ class Bishop(Piece):
         col = self.location.col - 1
         while row >= 0 and col >= 0:
             loc = PieceLocation(row, col)
-            if check_piece_at(loc, self.color):
+            if check_piece_at(loc):
                 if check_opposing_piece_at(loc, self.color):
                     spaces.append(loc)
                 break

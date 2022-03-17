@@ -1,4 +1,4 @@
-
+from abc import abstractmethod
 from PieceLocation import PieceLocation
 
 class Piece:
@@ -23,7 +23,7 @@ class Piece:
         """
         self.hitpoints = hitpoints
         self.maxhitpoints = hitpoints
-        self.attack = attack
+        self.attack_points = attack
         self.location = location
         self.color = color
 
@@ -39,12 +39,47 @@ class Piece:
             self.has_moved = True
         self.location = loc
 
+    def attack(self, loc : PieceLocation, piece):
+        """
+        Attacks the given piece, dealing damage.
+        NOTE: this method is NOT responsible for moving any pieces, only for damage calculation.
+        @param {Piece} piece: the piece to deal damage to.
+        returns {Piece}: new piece created after dealing damage to the old one.
+        """
+
+        # TODO: implement fancy version. For now, just make it normal chess.
+        damage_dealt = piece.damage(self.calculate_damage())
+        self.damage(damage_dealt)
+        return self.__class__(damage_dealt, self.attack_points, loc, self.color)
+
+    def damage(self, damage : float) -> float:
+        """
+        Damages this piece, and returns the damage dealt
+        @param {float} damage: the incoming damage
+        returns {float}: the damage actually dealt
+        """
+        if damage > self.hitpoints:
+            damage = self.hitpoints
+        self.hitpoints -= damage
+        return damage
+
     def calculate_damage(self) -> float:
         """
         returns the damage expected, given this piece's hp and attack stats.
+        Currently rounds damage DOWN
         """
-        return self.attack * self.hitpoints / self.maxhitpoints
 
+        # for testing purposes, using infinite (999) damage value here for now.
+        return 999 #self.attack_points * self.hitpoints // self.maxhitpoints
+
+
+    def is_dead(self) -> bool:
+        """
+        returns if this piece is dead (hp <= 0) or not
+        """
+        return self.hitpoints <= 0
+
+    @abstractmethod
     def get_movement_spaces(self, board_size : int, check_piece_at) -> list:
         """
         returns an array of all possible locations to move to (not including attacking)
@@ -55,6 +90,7 @@ class Piece:
         """
         return []
 
+    @abstractmethod
     def get_attack_spaces(self, board_size : int, check_piece_at, check_opposing_piece_at) -> list:
         """
         returns an array of all possible locations to move to (not including attacking)
