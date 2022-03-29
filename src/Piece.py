@@ -27,7 +27,7 @@ class Piece:
         self.location = location
         self.color = color
 
-        self.has_moved = False
+        self.move_count = 0
 
     def move(self, loc : PieceLocation):
         """
@@ -36,7 +36,7 @@ class Piece:
         """
 
         if not self.location.same_space(loc):
-            self.has_moved = True
+            self.move_count += 1
         self.location = loc
 
     def attack(self, loc : PieceLocation, piece):
@@ -50,6 +50,7 @@ class Piece:
         # TODO: implement fancy version. For now, just make it normal chess.
         damage_dealt = piece.damage(self.calculate_damage())
         self.damage(damage_dealt)
+        print("did", damage_dealt, "damage. Attacked piece is now at:", piece.hitpoints)
         return self.__class__(damage_dealt, self.attack_points, loc, self.color)
 
     def damage(self, damage : float) -> float:
@@ -103,3 +104,37 @@ class Piece:
         """
 
         return []
+
+    def get_special_movement_spaces(self, board_size : int, check_piece_at, get_piece_at):
+        # TODO: this is gonna need more inputs. Rethink?
+        """
+        returns a dictionary of the possible movement spaces
+            mapped to a dictionary of other pieces to be moved.
+        @param {int} board_size: the size of the board
+        @param {Callable(loc:PieceLocation, color:int)} check_piece_at: function that checks if
+            a piece exists at the specified location
+        @param {Callable(loc:PieceLocation)} get_piece_at: function
+            that returns the pointer to the piece at the specified location
+        returns: {dict<PieceLocation,dict<PieceLocation,PieceLocation>>} where the keys are the
+            possible locations this piece could move to, and the values are dictionaries of
+            the locations that other pieces would have to move to.
+        """
+        return {}
+
+    def get_special_attack_spaces(self, board_size : int,
+                                  check_piece_at,
+                                  check_opposing_piece_at,
+                                  get_piece_at):
+        """
+        returns a dictionary of possible spaces to move to, and the pieces attacked
+        @param {int} board_size: the size of the board
+        @param {Callable(loc:PieceLocation, color:int)} check_piece_at: function that checks if
+            a piece exists at the specified location
+        @param {Callable(loc:PieceLocation, color:int)} check_opposing_piece_at: function
+            that checks if the space specified has a piece occupying it of the opposing color.
+        @param {Callable(loc:PieceLocation)} get_piece_at: function
+            that returns the pointer to the piece at the specified location
+        returns: {dict<PieceLocation,PieceLocation>} where the keys are the spaces where
+            this piece moves to, and the values are the locations of the attacked pieces
+        """
+        return {}

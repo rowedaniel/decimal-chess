@@ -35,7 +35,6 @@ class TextUI:
                 'h' : "this menu",
                 'p' : "display a piece's possible movements and attacks",
                 'm' : "move a piece",
-                "a" : "attack with a piece",
                 "q" : "quit"
                 }
 

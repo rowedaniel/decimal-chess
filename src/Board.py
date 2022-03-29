@@ -106,7 +106,16 @@ class Board:
 
         """
         if self.check_piece_at(loc):
-            return self.get_piece(loc).get_movement_spaces(self.size, self.check_piece_at)
+            piece = self.get_piece(loc)
+            normal = piece.get_movement_spaces(self.size, self.check_piece_at)
+            special = list(
+                    piece.get_special_movement_spaces(
+                        self.size,
+                        self.check_piece_at,
+                        self.get_piece).keys()
+                    )
+            return normal + special
+
         return []
 
     def get_piece_attack(self, loc : PieceLocation) -> list:
@@ -116,11 +125,19 @@ class Board:
 
         """
         if self.check_piece_at(loc):
-            return self.get_piece(loc).get_attack_spaces(
+            piece = self.get_piece(loc)
+            normal = piece.get_attack_spaces(
                     self.size,
                     self.check_piece_at,
-                    self.check_opposing_piece_at
+                    self.check_opposing_piece_at)
+            special = list(
+                    piece.get_special_attack_spaces(
+                       self.size,
+                       self.check_piece_at,
+                       self.check_opposing_piece_at,
+                       self.get_piece).keys()
                     )
+            return normal + special
         return []
 
 
@@ -131,9 +148,16 @@ class Board:
         moves piece at designated row, col to new designated row, col
         """
 
-        # if there's  an opposing piece there, you gotta attack it.
         piece = self.get_piece(loc1)
-        if self.check_opposing_piece_at(loc2, piece.color):
+
+        # first, check weird special movement and attacks
+        special_attack_spaces = piece.get_special_attack_spaces(self.size,
+                self.check_piece_at, self.check_opposing_piece_at, self.get_piece)
+        if loc2 in special_attack_spaces:
+            self.place_piece(loc2, piece.attack(loc2, self.get_piece(special_attack_spaces[loc2])))
+            self.clean_dead_pieces()
+        # if there's  an opposing piece there, you gotta attack it.
+        elif self.check_opposing_piece_at(loc2, piece.color):
             # as per this chess variant, instead of moving, spawn a new piece at the
             # desired location
             self.place_piece(loc2, piece.attack(loc2, self.get_piece(loc2)))
