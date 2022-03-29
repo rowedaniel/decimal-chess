@@ -1,4 +1,4 @@
-Chess Project built for Yonas, using python
+# Chess Project built for Yonas, using python
 
 to do list:
 1. detect if king is checkmated
