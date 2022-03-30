@@ -33,7 +33,7 @@ class Knight(Piece):
             row = self.location.row + movement[i]
             col = self.location.col + movement[i-1]
             loc = PieceLocation(row, col)
-            if row < board_size and col < board_size and \
+            if 0 <= row < board_size and 0 <= col < board_size and \
                     check_opposing_piece_at(loc, self.color):
                 spaces.append(loc)
 

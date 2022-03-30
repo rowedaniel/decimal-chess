@@ -25,7 +25,9 @@ class Pawn(Piece):
         row = self.location.row + ( -1 if self.color == Piece.BLACK else 1 )
         for col in (self.location.col-1, self.location.col+1):
             loc = PieceLocation(row, col)
-            if 0 <= row < board_size and check_opposing_piece_at(loc, self.color):
+            if 0 <= row < board_size and \
+                    0 <= col < board_size and \
+                    check_opposing_piece_at(loc, self.color):
                 spaces.append(loc)
 
         return spaces

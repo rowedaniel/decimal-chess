@@ -2,7 +2,6 @@
 from Board import Board
 
 from PieceLocation import PieceLocation
-from Piece import Piece
 
 from Rook import Rook
 from Bishop import Bishop

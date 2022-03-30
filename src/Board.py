@@ -66,6 +66,15 @@ class Board:
         """
         return (cell.color for cell in self.state[loc.row][loc.col])
 
+    def get_all_occupied_locs(self) -> iter:
+        """
+        returns generator that gets every occupied space in the board
+        """
+        for irow, row in enumerate(self.state):
+            for icol, space in enumerate(row):
+                for index, _ in enumerate(space):
+                    yield PieceLocation(irow, icol, index)
+
     def clean_dead_pieces(self):
         """
         removes all pieces with 0 health from the board
@@ -98,6 +107,12 @@ class Board:
         @param {int} color: the color to check
         """
         return any((c != color for c in self.get_piece_color_at(loc)))
+
+    def check_threatened(self, loc : PieceLocation, color : int):
+        """
+        Checks if the specified location is threatened by any opposing piece
+        """
+        return False
 
     def get_piece_movement(self, loc : PieceLocation) -> list:
         """
@@ -156,6 +171,8 @@ class Board:
         if loc2 in special_attack_spaces:
             self.place_piece(loc2, piece.attack(loc2, self.get_piece(special_attack_spaces[loc2])))
             self.clean_dead_pieces()
+        # next, check for special movement
+        # TODO: add special movement checks
         # if there's  an opposing piece there, you gotta attack it.
         elif self.check_opposing_piece_at(loc2, piece.color):
             # as per this chess variant, instead of moving, spawn a new piece at the
@@ -168,4 +185,3 @@ class Board:
             self.remove_piece(loc1)
             piece.move(loc2)
             self.place_piece(loc2, piece)
-

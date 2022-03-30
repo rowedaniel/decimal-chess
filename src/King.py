@@ -39,7 +39,7 @@ class King(Piece):
 
                 if 0 <= row < board_size and \
                    0 <= col < board_size and \
-                   check_opposing_piece_at(loc):
+                   check_opposing_piece_at(loc, self.color):
 
                     spaces.append(loc)
 

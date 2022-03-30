@@ -1,5 +1,5 @@
 
-from text_UI import TextUI
+from browser_UI import BrowserUI
 from ClassicBoard import ClassicBoard
 
 from Rook import Rook
@@ -24,13 +24,13 @@ def main():
                 Rook : 5,
             })
 
-    ui = TextUI()
+    ui = BrowserUI(board)
     player_turn_color = 1
 
     while 1:
         player_turn_color = (player_turn_color + 1) % 2
 
-        cmd, loc1, loc2 = ui.get_user_action(board, player_turn_color)
+        cmd, loc1, loc2 = ui.get_user_action(player_turn_color)
         if cmd == "move":
             board.move_piece(loc1, loc2)
         elif cmd == "quit":
