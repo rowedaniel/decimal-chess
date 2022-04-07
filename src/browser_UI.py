@@ -1,6 +1,9 @@
 
-from flask import Flask, render_template, session, copy_current_request_context
-from flask_socketio import SocketIO, emit, disconnect
+#from flask import Flask, render_template, session, copy_current_request_context
+#from flask_socketio import SocketIO, emit, disconnect
+from threading import Thread, Event
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
 
 from PieceLocation import PieceLocation
 from Board import Board
@@ -33,6 +36,13 @@ class BrowserUI:
                 Pawn.WHITE : 'white',
                 Pawn.BLACK : 'black'
                 }
+        self.turn_color = Pawn.WHITE
+        self.enable_move = False
+        self.move_action = None
+        self.quit_action = False
+
+        self.update_board_event = Event()
+        self.has_acted_event = Event()
 
         app = Flask(__name__)
         socket = SocketIO(app, async_mode=None)
@@ -49,10 +59,83 @@ class BrowserUI:
         def handle_view(message):
             self.handle_view(message)
 
-        socket.run(app, debug=True, port=port)
+        @socket.on("q_move")
+        def handle_move(message):
+            self.handle_move(message)
+
+        @socket.on("q_quit")
+        def handle_quit(message):
+            self.handle_quit()
+
+        @socket.on("disconnect")
+        def handle_disconnect():
+            pass
+            #self.handle_quit()
+
+
+        self.website_thread = Thread(target=lambda: socket.run(app, debug=False, use_reloader=False, port=port))
+        self.website_thread.setDaemon(True)
+        self.website_thread.start()
+
 
     def handle_connect(self, auth):
         """ handles socket connections """
+        self.send_board()
+
+    def handle_view(self, message):
+        """
+        handles user requests to view a piece's moves/attacks
+        """
+        loc = self.get_client_pos(message)
+        if loc is None:
+            return
+
+        locs = self.board.get_piece_movement(loc) + \
+               self.board.get_piece_attack(loc)
+        emit('r_view', [[l.row, l.col, l.index] for l in locs])
+
+    def handle_move(self, message):
+        """
+        handles user requests to move
+        """
+        if not self.enable_move:
+            return
+
+        if 'from' not in message or 'to' not in message:
+            return
+
+        loc1 = self.get_client_pos(message['from'])
+        loc2 = self.get_client_pos(message['to'])
+        if loc1 is None or loc2 is None:
+            return
+
+
+        if self.turn_color != self.board.get_piece_color_at(loc1):
+            return
+
+
+        locs = self.board.get_piece_movement(loc1) + \
+               self.board.get_piece_attack(loc1)
+        if loc2 not in locs:
+            return
+
+        self.move_action = (loc1, loc2)
+        self.has_acted_event.set()
+
+        self.update_board_event.clear()
+        self.update_board_event.wait()
+        self.send_board()
+
+    def handle_quit(self):
+        self.quit_action = True
+        self.has_acted_event.set()
+
+
+    def send_board(self):
+        """
+        sends the current board state to the client
+        """
+        print('update board')
         # TODO: make this a method in board
         # NOTE: this currently doesn't allow for removing pieces (only adding)
         updated_pieces = {}
@@ -64,29 +147,32 @@ class BrowserUI:
                             self.names[piece.__class__]
                             ]
 
+        data = {}
+        data["pieces"] = updated_pieces
+        data["color"] = self.colors[self.turn_color]
+        emit("r_update_pieces", data, broadcast=True)
 
-        emit("r_update_pieces", updated_pieces)
-
-    def handle_view(self, message):
+    def get_client_pos(self, message):
         """
-        handles user requests to view a piece's moves/attacks
+        converts the javascript-style messages from socket
+        to normal PieceLocations.
+        @param<map> message: incoming socket message
+        returns: <PieceLocation>
         """
         if 'row' not in message or \
                 'col' not in message or \
                 'index' not in message:
-            return
+            return None
         try:
             row = int(message['row'])
             col = int(message['col'])
             index = int(message['index'])
-            loc = PieceLocation(row, col, index)
+            return PieceLocation(row, col, index)
         except:
             # note: this broadcasts error; unideal
-            return
+            return None
 
-        locs = self.board.get_piece_movement(loc) + \
-               self.board.get_piece_attack(loc)
-        emit('r_view', [[l.row, l.col, l.index] for l in locs])
+
 
 
     def get_user_action(self, player_turn_color : int):
@@ -94,6 +180,18 @@ class BrowserUI:
         queries user for a move.
         Does not return until the user selects their move.
         """
-        return ("", None, None)
 
+        self.update_board_event.set()
 
+        self.turn_color = player_turn_color
+        self.enable_move = True
+
+        self.has_acted_event.clear()
+        self.has_acted_event.wait()
+
+        self.enable_move = False
+        if self.quit_action:
+            return 'quit', None, None
+        if self.move_action:
+            return "move", self.move_action[0], self.move_action[1]
+        return "", None, None

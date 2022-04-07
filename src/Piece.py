@@ -12,7 +12,8 @@ class Piece:
             hitpoints : float,
             attack : float,
             location : PieceLocation,
-            color : int):
+            color : int,
+            move_count : int = 0):
         """
         generic chess piece class
         @param {float} hitpoints: the number of hitpoints this piece has
@@ -27,7 +28,7 @@ class Piece:
         self.location = location
         self.color = color
 
-        self.move_count = 0
+        self.move_count = move_count
 
     def move(self, loc : PieceLocation):
         """
@@ -47,11 +48,12 @@ class Piece:
         returns {Piece}: new piece created after dealing damage to the old one.
         """
 
-        # TODO: implement fancy version. For now, just make it normal chess.
+        self.move_count += 1
+
         damage_dealt = piece.damage(self.calculate_damage())
         self.damage(damage_dealt)
         print("did", damage_dealt, "damage. Attacked piece is now at:", piece.hitpoints)
-        return self.__class__(damage_dealt, self.attack_points, loc, self.color)
+        return self.__class__(damage_dealt, self.attack_points, loc, self.color, self.move_count)
 
     def damage(self, damage : float) -> float:
         """
@@ -71,7 +73,7 @@ class Piece:
         """
 
         # for testing purposes, using infinite (999) damage value here for now.
-        return 999 #self.attack_points * self.hitpoints // self.maxhitpoints
+        return self.attack_points * self.hitpoints // self.maxhitpoints
 
 
     def is_dead(self) -> bool:
@@ -138,3 +140,6 @@ class Piece:
             this piece moves to, and the values are the locations of the attacked pieces
         """
         return {}
+
+    def __str__(self):
+        return 'undefined piece'

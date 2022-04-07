@@ -19,13 +19,13 @@ class ClassicBoard(Board):
     """
     Standard 8x8 Chess board, with default piece layout.
     """
-    def __init__(self, base_piece_health : int, piece_attack : dict):
+    def __init__(self, base_piece_health : int, piece_attack : dict, game_id : int):
         """
         Builds the board (pieces included)
         @param {int} base_piece_health: the base health for each piece (the same for all)
         @param {map<Piece, int} piece_attack: dictionary of attack stats for each piece
         """
-        super().__init__(8)
+        super().__init__(8, game_id)
 
 
         # place all the pieces

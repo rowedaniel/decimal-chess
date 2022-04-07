@@ -61,8 +61,7 @@ class Rook(Piece):
         while row < board_size:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row += 1
 
@@ -72,8 +71,7 @@ class Rook(Piece):
         while col < board_size:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             col += 1
 
@@ -83,8 +81,7 @@ class Rook(Piece):
         while row >= 0:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row -= 1
 
@@ -94,9 +91,12 @@ class Rook(Piece):
         while col >= 0:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             col -= 1
 
+
         return spaces
+
+    def __str__(self):
+        return 'rook'

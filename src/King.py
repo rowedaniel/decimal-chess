@@ -38,9 +38,10 @@ class King(Piece):
                 loc = PieceLocation(row, col)
 
                 if 0 <= row < board_size and \
-                   0 <= col < board_size and \
-                   check_opposing_piece_at(loc, self.color):
-
-                    spaces.append(loc)
+                        0 <= col < board_size:
+                    spaces.extend(check_opposing_piece_at(loc, self.color))
 
         return spaces
+
+    def __str__(self):
+        return 'king'

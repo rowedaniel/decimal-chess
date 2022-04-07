@@ -28,3 +28,6 @@ class Queen(Piece):
                 Bishop.get_attack_spaces(self, board_size, check_piece_at, check_opposing_piece_at)
                 )
         return spaces
+
+    def __str__(self):
+        return 'queen'

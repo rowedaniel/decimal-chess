@@ -38,3 +38,6 @@ class Knight(Piece):
                 spaces.append(loc)
 
         return spaces
+
+    def __str__(self):
+        return 'knight'

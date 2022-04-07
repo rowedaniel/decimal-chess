@@ -13,6 +13,11 @@ from Pawn import Pawn
 
 
 def main():
+
+    with open("game_info.txt", "r", encoding="utf-8") as file:
+        game_id = int(file.read()) + 1
+
+
     board = ClassicBoard(
             10, # base hp is 10
             { # now set the attack stat for each piece
@@ -22,7 +27,9 @@ def main():
                 Bishop : 3,
                 Knight : 3,
                 Rook : 5,
-            })
+            },
+            game_id
+            )
 
     ui = BrowserUI(board)
     player_turn_color = 1
@@ -34,17 +41,11 @@ def main():
         if cmd == "move":
             board.move_piece(loc1, loc2)
         elif cmd == "quit":
-            return
+            print('Quitting!')
+            break
 
-
-
-
-
-
-
-
-
-
+    with open("game_info.txt", "w", encoding="utf-8") as file:
+        file.write(str(game_id))
 
 
 

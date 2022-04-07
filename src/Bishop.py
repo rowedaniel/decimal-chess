@@ -15,7 +15,7 @@ class Bishop(Piece):
         row = self.location.row + 1
         col = self.location.col + 1
         loc = PieceLocation(row, col)
-        while row < board_size and col < board_size and not check_piece_at(loc):
+        while 0 <= row < board_size and 0 <= col < board_size and not check_piece_at(loc):
             spaces.append(PieceLocation(row, col))
             row += 1
             col += 1
@@ -25,7 +25,7 @@ class Bishop(Piece):
         row = self.location.row + 1
         col = self.location.col - 1
         loc = PieceLocation(row, col)
-        while row < board_size and col < board_size and not check_piece_at(loc):
+        while 0 <= row < board_size and 0 <= col < board_size and not check_piece_at(loc):
             spaces.append(PieceLocation(row, col))
             row += 1
             col -= 1
@@ -35,7 +35,7 @@ class Bishop(Piece):
         row = self.location.row - 1
         col = self.location.col + 1
         loc = PieceLocation(row, col)
-        while row < board_size and col < board_size and not check_piece_at(loc):
+        while 0 <= row < board_size and 0 <= col < board_size and not check_piece_at(loc):
             spaces.append(PieceLocation(row, col))
             row -= 1
             col += 1
@@ -45,7 +45,7 @@ class Bishop(Piece):
         row = self.location.row - 1
         col = self.location.col - 1
         loc = PieceLocation(row, col)
-        while row < board_size and col < board_size and not check_piece_at(loc):
+        while 0 <= row < board_size and 0 <= col < board_size and not check_piece_at(loc):
             spaces.append(PieceLocation(row, col))
             row -= 1
             col -= 1
@@ -62,11 +62,10 @@ class Bishop(Piece):
         # bottom-right diagonal
         row = self.location.row + 1
         col = self.location.col + 1
-        while row < board_size and col < board_size:
+        while 0 <= row < board_size and 0 <= col < board_size:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row += 1
             col += 1
@@ -74,11 +73,10 @@ class Bishop(Piece):
         # bottom-left diagonal
         row = self.location.row + 1
         col = self.location.col - 1
-        while row < board_size and col >= 0:
+        while 0 <= row < board_size and col >= 0:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row += 1
             col -= 1
@@ -86,11 +84,10 @@ class Bishop(Piece):
         # top-right diagonal
         row = self.location.row - 1
         col = self.location.col + 1
-        while row >= 0 and col < board_size:
+        while row >= 0 and 0 <= col < board_size:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row -= 1
             col += 1
@@ -101,10 +98,12 @@ class Bishop(Piece):
         while row >= 0 and col >= 0:
             loc = PieceLocation(row, col)
             if check_piece_at(loc):
-                if check_opposing_piece_at(loc, self.color):
-                    spaces.append(loc)
+                spaces.extend(check_opposing_piece_at(loc, self.color))
                 break
             row -= 1
             col -= 1
 
         return spaces
+
+    def __str__(self):
+        return 'bishop'

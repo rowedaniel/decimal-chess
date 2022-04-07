@@ -20,6 +20,9 @@ table {
 td {
     width: 60px;
     height: 60px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
 }
 
 tr:nth-child(odd) td:nth-child(odd) {
@@ -38,50 +41,73 @@ tr:nth-child(even) td:nth-child(odd) {
     background-color: var(--black);
 }
 
-td.white,td.black {
+
+td > div {
     background-image: url("/static/Chess_Pieces_Sprite.svg");
     background-size: 360px 120px;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
-td.white {
+.white {
     background-position-y: 0;
 }
-
-
-td.black {
+.black {
     background-position-y: 100%;
 }
 
-td.king {
+.king {
     background-position-x: 0;
 }
-
-td.pawn {
+.pawn {
     background-position-x: 100%;
 }
-
-td.rook {
+.rook {
     background-position-x: 80%;
 }
-
-td.knight {
+.knight {
     background-position-x: 60%;
 }
-
-td.bishop {
+.bishop {
     background-position-x: 40%;
 }
-
-td.queen {
+.queen {
     background-position-x: 20%;
 }
 
-td.movable::after {
+td.movable::after, td.move-to::after {
     content: "";
     border-radius: 50%;
     width: 20%;
     height: 20%;
-    background-color: #00000080;
     display: block;
     margin: auto;
+    position: relative;
+    z-index: 1;
+    opacity: 0.5;
+}
+
+td.movable::after {
+    background-color: #222;
+    border: 1px solid #AAA;
+}
+
+td.move-to::after {
+    background-color: #0F0;
+    border: 1px solid black;
+}
+
+td.move-to:hover {
+    outline: 4px solid #4A4AE0;
+    outline-offset: -2px;
+    position: relative;
+}
+
+td.selected {
+    outline: 4px solid #4AE04A;
+    outline-offset: -2px;
 }
