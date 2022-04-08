@@ -1,5 +1,11 @@
 
 from Piece import Piece
+
+from Queen import Queen
+#from Rook import Rook
+#from Bishop import Bishop
+#from Knight import Knight
+
 from PieceLocation import PieceLocation
 
 class Pawn(Piece):
@@ -40,6 +46,16 @@ class Pawn(Piece):
         """
         spaces = {}
 
+
+        # promotion is considered a special attack, so deal with that now.
+        if self.location.row == (self.color == Piece.WHITE) * (board_size-3) + 1:
+            loc = PieceLocation(
+                    self.location.row+ (-1 if self.color == Piece.BLACK else 1),
+                    self.location.col)
+            print('promotion op! ==================================================')
+            print(loc.row, loc.col)
+            spaces[loc] = loc
+
         side_row = (board_size-1) * (self.color == Piece.WHITE) + \
                 3 * (-1 if self.color == Piece.WHITE else 1)
         if self.location.row != side_row:
@@ -71,6 +87,33 @@ class Pawn(Piece):
                         spaces[loc] = side_loc
 
         return spaces
+
+    def calculate_damage(self, other):
+        if other is self:
+            return self.maxhitpoints
+        return super().calculate_damage(other)
+
+    def attack(self, loc : PieceLocation, piece):
+        print('attacking!', loc.row, loc.col)
+        # NOTE: constant board size of 8 assumed here
+        if loc.row == (self.color == Piece.WHITE) * 7:
+            # promoting!
+            # TODO: implement promotion other than queen
+
+            if piece is None:
+                damage_dealt = self.hitpoints
+            else:
+                damage_dealt = piece.damage(self.calculate_damage(piece))
+            self.damage(damage_dealt)
+            return Queen(damage_dealt,
+                    self.maxhitpoints,
+                    self.attack_points, # NOTE: is this what we want?
+                    loc,
+                    self.color,
+                    self.move_count)
+
+        return super().attack(loc, piece)
+
 
     def __str__(self):
         return 'pawn'

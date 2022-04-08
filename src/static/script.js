@@ -148,11 +148,18 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
 
     socket.on("r_update_pieces", function(data) {
+        if(data["won"]) {
+            console.log("won", data["winner"]);
+            document.getElementById("win-display").classList.add("won");
+            document.getElementById("win-text").innerHTML = data["winner"] +  " won";
+        }
+
         wipe_tiles();
         for(let key in data["pieces"]) {
             let keyparts = key.split(',');
             let row = parseInt(keyparts[0]);
             let col = parseInt(keyparts[1]);
+            //let index = parseInt(keyparts[2]);
 
             let tile = get_tile(row, col);
             if(!tile) { continue; }
@@ -205,6 +212,11 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
     document.getElementById("quit-button").addEventListener("click", function() {
         socket.emit("q_quit", {});
+    });
+
+    document.getElementById("restart-button").addEventListener("click", function() {
+        socket.emit("q_restart", {});
+        window.location.reload();
     });
 
 });

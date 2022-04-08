@@ -53,6 +53,12 @@ td > div {
     left: 0;
 }
 
+td > div::after {
+    position: absolute;
+    left:0;
+    bottom:0;
+}
+
 .white {
     background-position-y: 0;
 }
@@ -77,6 +83,37 @@ td > div {
 }
 .queen {
     background-position-x: 20%;
+}
+
+.hp-10::after {
+    content: "10";
+}
+.hp-9::after {
+    content: "9";
+}
+.hp-8::after {
+    content: "8";
+}
+.hp-7::after {
+    content: "7";
+}
+.hp-6::after {
+    content: "6";
+}
+.hp-5::after {
+    content: "5";
+}
+.hp-4::after {
+    content: "4";
+}
+.hp-3::after {
+    content: "3";
+}
+.hp-2::after {
+    content: "2";
+}
+.hp-1::after {
+    content: "1";
 }
 
 td.movable::after, td.move-to::after {
@@ -110,4 +147,13 @@ td.move-to:hover {
 td.selected {
     outline: 4px solid #4AE04A;
     outline-offset: -2px;
+}
+
+
+#win-display {
+    display: none;
+}
+
+#win-display.won {
+    display: block;
 }

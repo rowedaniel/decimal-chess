@@ -25,32 +25,44 @@ class ClassicBoard(Board):
         @param {int} base_piece_health: the base health for each piece (the same for all)
         @param {map<Piece, int} piece_attack: dictionary of attack stats for each piece
         """
+
+        self.base_piece_health= base_piece_health
+        self.piece_attack = piece_attack
+
         super().__init__(8, game_id)
 
+        self.reset_board()
 
+
+
+    def reset_board(self):
+        super().reset_board()
         # place all the pieces
-        backrow_layout = (Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook)
-        frontrow_layout = tuple(Pawn for i in range(self.size))
+        layout = (
+                (Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook),
+                tuple(Pawn for i in range(self.size))
+                )
 
         for cindex in (0,1):
             color = (Piece.WHITE, Piece.BLACK)[cindex]
 
-            # back row
-            row = cindex * 7
-            for column in range(self.size):
-                piece = backrow_layout[column]
-                loc = PieceLocation(row, column)
+            rows = []
+            if cindex:
+                rows.append(self.size-1)
+                rows.append(self.size-2)
+            else:
+                rows.append(0)
+                rows.append(1)
+            for rindex in range(2):
+                row = rows[rindex]
+                for column in range(self.size):
+                    piece = layout[rindex][column]
+                    loc = PieceLocation(row, column)
 
-                self.place_piece(loc,
-                        piece(base_piece_health, piece_attack[piece], loc, color)
-                        )
-
-            # front row
-            row += 1 - 2 * cindex
-            for column in range(self.size):
-                piece = frontrow_layout[column]
-                loc = PieceLocation(row, column)
-
-                self.place_piece(loc,
-                        piece(base_piece_health, piece_attack[piece], loc, color)
-                        )
+                    self.place_piece(loc,
+                            piece(self.base_piece_health,
+                                self.base_piece_health,
+                                self.piece_attack[piece],
+                                loc,
+                                color)
+                            )

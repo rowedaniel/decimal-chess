@@ -14,11 +14,11 @@ to do list:
         [DONE] 3. loc from
         [DONE] 4. loc to
         [DONE] 5. piece moved
-        6. piece attacked (if any)
-        8. health of old attacker
-        9. health of new attacker
-        10. health of defender
-        11. total # of pieces on the board
+        [DONE] 6. piece attacked (if any)
+        [DONE] 8. health of old attacker
+        [DONE] 9. health of new attacker
+        [DONE] 10. health of defender
+        [DONE] 11. total # of pieces on the board
 2. detect if king is checkmated
     1. detect if a player has any kings on board
     2. detect if a piece is threatened

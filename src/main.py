@@ -44,6 +44,13 @@ def main():
             print('Quitting!')
             break
 
+        if board.check_win():
+            if ui.alert_won(board.get_winner()):
+                board.reset_board()
+                board.game_id += 1
+            else:
+                break
+
     with open("game_info.txt", "w", encoding="utf-8") as file:
         file.write(str(game_id))
 

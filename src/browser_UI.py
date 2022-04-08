@@ -36,6 +36,9 @@ class BrowserUI:
                 Pawn.WHITE : 'white',
                 Pawn.BLACK : 'black'
                 }
+        self.won = False
+        self.winning_color = 0
+
         self.turn_color = Pawn.WHITE
         self.enable_move = False
         self.move_action = None
@@ -43,6 +46,7 @@ class BrowserUI:
 
         self.update_board_event = Event()
         self.has_acted_event = Event()
+        self.win_event = Event()
 
         app = Flask(__name__)
         socket = SocketIO(app, async_mode=None)
@@ -66,6 +70,10 @@ class BrowserUI:
         @socket.on("q_quit")
         def handle_quit(message):
             self.handle_quit()
+
+        @socket.on("q_restart")
+        def handle_restart(message):
+            self.handle_restart()
 
         @socket.on("disconnect")
         def handle_disconnect():
@@ -127,15 +135,43 @@ class BrowserUI:
         self.send_board()
 
     def handle_quit(self):
+        """
+        when a client quits, call this to notify the game manager
+        """
         self.quit_action = True
         self.has_acted_event.set()
+        self.win_event.set()
 
+    def handle_restart(self):
+        """
+        when client requests a reset, this is called.
+        """
+        self.quit_action = False
+        self.win_event.set()
+
+    def alert_won(self, color : int):
+        """
+        alerts client that someone has won
+        """
+        self.won = True
+        self.winning_color = color
+
+        print('alerting win!')
+        self.update_board_event.set()
+
+        self.win_event.clear()
+        self.win_event.wait(timeout=60)
+
+        self.won = False
+
+        return not self.quit_action
 
     def send_board(self):
         """
         sends the current board state to the client
+        alternatively, if the board is won, then send that information.
         """
-        print('update board')
+
         # TODO: make this a method in board
         # NOTE: this currently doesn't allow for removing pieces (only adding)
         updated_pieces = {}
@@ -144,13 +180,18 @@ class BrowserUI:
                 for i,piece in enumerate(cell):
                     updated_pieces[f'{irow},{icol},{i}'] = [
                             self.colors[piece.color],
-                            self.names[piece.__class__]
+                            self.names[piece.__class__],
+                            f'hp-{piece.hitpoints}'
                             ]
 
         data = {}
         data["pieces"] = updated_pieces
         data["color"] = self.colors[self.turn_color]
-        emit("r_update_pieces", data, broadcast=True)
+        data["won"] = self.won
+        data["winner"] = self.colors[self.winning_color]
+
+        emit("r_update_pieces", data)
+
 
     def get_client_pos(self, message):
         """
