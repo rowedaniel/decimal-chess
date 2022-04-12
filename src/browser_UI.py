@@ -189,6 +189,7 @@ class BrowserUI:
         data["color"] = self.colors[self.turn_color]
         data["won"] = self.won
         data["winner"] = self.colors[self.winning_color]
+        data["turnnum"] = self.board.turn_number
 
         emit("r_update_pieces", data)
 

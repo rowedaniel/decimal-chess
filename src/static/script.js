@@ -154,6 +154,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
             document.getElementById("win-text").innerHTML = data["winner"] +  " won";
         }
 
+
         wipe_tiles();
         for(let key in data["pieces"]) {
             let keyparts = key.split(',');
@@ -191,6 +192,9 @@ window.addEventListener("DOMContentLoaded", function(event) {
         }
         if("color" in data) {
             document.getElementById("turn-label").innerHTML = data["color"];
+        }
+        if("turnnum" in data) {
+            document.getElementById("turn-number").innerHTML = data["turnnum"];
         }
     });
 
