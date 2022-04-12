@@ -77,6 +77,7 @@ class Board:
         """
         return self.get_piece(loc).color
 
+
     def get_all_occupied_locs(self) -> iter:
         """
         returns generator that gets every occupied space in the board
@@ -149,6 +150,17 @@ class Board:
         @param {PieceLocation} loc: where to place the piece
         """
         return len(self.state[loc.row][loc.col]) > 0
+
+    def get_hitpoints_at_tile(self, loc : PieceLocation) -> int:
+        """
+        returns the total hitpoints occupying a tile.
+        @param {PieceLocation} loc: the tile to check
+        returns {int}: total hp at the tile
+        """
+        total = 0
+        for loc in self.get_pieces_at_tile(loc):
+            total += self.get_piece(loc).hitpoints
+        return total
 
 
     def get_opposing_pieces_at_tile(self, loc : PieceLocation, color : int) -> bool:
@@ -248,7 +260,7 @@ class Board:
                     print("promoting")
                 defender = None
 
-            new_piece = piece.attack(loc2, defender)
+            new_piece = piece.attack(loc2, defender, self.get_hitpoints_at_tile)
             new_health = new_piece.hitpoints
             if defender:
                 defender_final_health = defender.hitpoints
@@ -263,7 +275,7 @@ class Board:
             defender = self.get_piece(loc2)
             defender_orig_health = defender.hitpoints
 
-            new_piece = piece.attack(loc2, defender)
+            new_piece = piece.attack(loc2, defender, self.get_hitpoints_at_tile)
             new_health = new_piece.hitpoints
             defender_final_health = defender.hitpoints
             piece_attacked = str(defender)
@@ -280,7 +292,7 @@ class Board:
         self.turn_number += 1
 
         if self.check_win():
-            special = ("White" if self.get_winner() == Piece.WHITE else "Black") + " Won"
+            special += " " + ("White" if self.get_winner() == Piece.WHITE else "Black") + " Won"
         with open(FILENAME, 'a', newline='', encoding='utf-8') as file:
             csv_writer = csv.writer(file, delimiter=',',
                     quotechar = '|', quoting=csv.QUOTE_MINIMAL)

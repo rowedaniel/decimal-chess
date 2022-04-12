@@ -178,11 +178,11 @@ class BrowserUI:
         for irow,row in enumerate(self.board.state):
             for icol,cell in enumerate(row):
                 for i,piece in enumerate(cell):
-                    updated_pieces[f'{irow},{icol},{i}'] = [
-                            self.colors[piece.color],
-                            self.names[piece.__class__],
-                            f'hp-{piece.hitpoints}'
-                            ]
+                    updated_pieces[f'{irow},{icol},{i}'] = {
+                            'color' : self.colors[piece.color],
+                            'name'  : self.names[piece.__class__],
+                            'hp'    : piece.hitpoints
+                            }
 
         data = {}
         data["pieces"] = updated_pieces

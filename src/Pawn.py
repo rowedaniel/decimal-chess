@@ -93,26 +93,25 @@ class Pawn(Piece):
             return self.maxhitpoints
         return super().calculate_damage(other)
 
-    def attack(self, loc : PieceLocation, piece):
+    def attack(self, loc : PieceLocation, piece, get_total_hp):
         print('attacking!', loc.row, loc.col)
         # NOTE: constant board size of 8 assumed here
         if loc.row == (self.color == Piece.WHITE) * 7:
             # promoting!
             # TODO: implement promotion other than queen
 
-            if piece is None:
-                damage_dealt = self.hitpoints
-            else:
-                damage_dealt = piece.damage(self.calculate_damage(piece))
-            self.damage(damage_dealt)
-            return Queen(damage_dealt,
+            if piece:
+                piece.damage(self.calculate_damage(piece))
+
+            damage_moved = self.damage(self.maxhitpoints - get_total_hp(loc))
+            return Queen(damage_moved,
                     self.maxhitpoints,
                     self.attack_points, # NOTE: is this what we want?
                     loc,
                     self.color,
                     self.move_count)
 
-        return super().attack(loc, piece)
+        return super().attack(loc, piece, get_total_hp)
 
 
     def __str__(self):

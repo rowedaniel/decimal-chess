@@ -21,11 +21,11 @@ def main():
     board = ClassicBoard(
             10, # base hp is 10
             { # now set the attack stat for each piece
-                Pawn : 1,
+                Pawn : 3,
                 King : 10,
                 Queen : 8,
-                Bishop : 3,
-                Knight : 3,
+                Bishop : 4,
+                Knight : 4,
                 Rook : 5,
             },
             game_id

@@ -41,20 +41,22 @@ class Piece:
             self.move_count += 1
         self.location = loc
 
-    def attack(self, loc : PieceLocation, piece):
+    def attack(self, loc : PieceLocation, piece, get_total_hp):
         """
         Attacks the given piece, dealing damage.
         NOTE: this method is NOT responsible for moving any pieces, only for damage calculation.
         @param {Piece} piece: the piece to deal damage to.
+        @param {Callable} get_total_hp: function that returns the total hp in a tile
         returns {Piece}: new piece created after dealing damage to the old one.
         """
 
         self.move_count += 1
 
-        damage_dealt = piece.damage(self.calculate_damage(piece))
-        self.damage(damage_dealt)
-        print("did", damage_dealt, "damage. Attacked piece is now at:", piece.hitpoints)
-        return self.__class__(damage_dealt,
+        piece.damage(self.calculate_damage(piece))
+
+        damage_moved = self.damage(self.maxhitpoints - get_total_hp(loc))
+        print("did", damage_moved, "damage. Attacked piece is now at:", piece.hitpoints)
+        return self.__class__(damage_moved,
                               self.maxhitpoints,
                               self.attack_points,
                               loc,
@@ -76,9 +78,10 @@ class Piece:
         """
         returns the damage expected, given this piece's hp and attack stats.
         Currently rounds damage DOWN
+        @param {Callable} get_total_hp: function that returns the total hp in a tile
         """
 
-        damage = (self.attack_points * self.hitpoints) // self.maxhitpoints
+        damage = (self.attack_points * self.hitpoints) / self.maxhitpoints
         print('calc damage:',
                 self.attack_points, "*",
                 self.hitpoints, "/",

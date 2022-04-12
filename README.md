@@ -29,3 +29,9 @@ to do list:
     3. En Passant
         - Currently works, but doesn't check if the piece moved last turn
 4. Testing?
+
+
+No rounding (but do round display to 1 decimal place)
+attack own pieces to merge (cap out at max hp)
+
+attacks should always leave tile with 10 total hp in it.

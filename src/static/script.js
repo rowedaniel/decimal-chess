@@ -172,9 +172,14 @@ window.addEventListener("DOMContentLoaded", function(event) {
             piece.addEventListener("click", function(event) {
                 select_piece(piece, tile);
             });
-            for(let c of data["pieces"][key]) {
-                piece.classList.add(c);
-            }
+
+            piece.classList.add(data['pieces'][key]['color']);
+            piece.classList.add(data['pieces'][key]['name']);
+            let hp = document.createElement("div");
+            hp.innerHTML = data['pieces'][key]['hp'].toFixed(1);
+            hp.classList.add("hp");
+            piece.appendChild(hp);
+
             tile.appendChild(piece);
 
             // update all other pieces in tile so you can see all of them
