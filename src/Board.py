@@ -279,6 +279,8 @@ class Board:
 
         self.turn_number += 1
 
+        if self.check_win():
+            special = ("White" if self.get_winner() == Piece.WHITE else "Black") + " Won"
         with open(FILENAME, 'a', newline='', encoding='utf-8') as file:
             csv_writer = csv.writer(file, delimiter=',',
                     quotechar = '|', quoting=csv.QUOTE_MINIMAL)
@@ -299,4 +301,3 @@ class Board:
                     piece_attacked,
                     special
                     ))
-
