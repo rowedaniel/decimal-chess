@@ -25,8 +25,8 @@ def main():
                 King : 10,
                 Queen : 8,
                 Bishop : 4,
-                Knight : 4,
-                Rook : 5,
+                Knight : 5,
+                Rook : 7,
             },
             game_id
             )
