@@ -23,6 +23,7 @@ class Board:
         self.size = size
         self.game_id = game_id
         self.reset_board()
+        self.logging = True
 
     # private methods`
     def reset_board(self):
@@ -293,23 +294,25 @@ class Board:
 
         if self.check_win():
             special += " " + ("White" if self.get_winner() == Piece.WHITE else "Black") + " Won"
-        with open(FILENAME, 'a', newline='', encoding='utf-8') as file:
-            csv_writer = csv.writer(file, delimiter=',',
-                    quotechar = '|', quoting=csv.QUOTE_MINIMAL)
-            csv_writer.writerow((
-                    self.game_id,
-                    self.turn_number,
-                    loc1.row,
-                    loc1.col,
-                    loc1.index,
-                    loc2.row,
-                    loc2.col,
-                    loc2.index,
-                    str(piece),
-                    orig_health,
-                    new_health,
-                    defender_orig_health,
-                    defender_final_health,
-                    piece_attacked,
-                    special
-                    ))
+
+        if self.logging:
+            with open(FILENAME, 'a', newline='', encoding='utf-8') as file:
+                csv_writer = csv.writer(file, delimiter=',',
+                        quotechar = '|', quoting=csv.QUOTE_MINIMAL)
+                csv_writer.writerow((
+                        self.game_id,
+                        self.turn_number,
+                        loc1.row,
+                        loc1.col,
+                        loc1.index,
+                        loc2.row,
+                        loc2.col,
+                        loc2.index,
+                        str(piece),
+                        orig_health,
+                        new_health,
+                        defender_orig_health,
+                        defender_final_health,
+                        piece_attacked,
+                        special
+                        ))
